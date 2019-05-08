@@ -23,9 +23,9 @@ WebUI.click(findTestObject('Booking/startDate'))
 
 WebUI.delay(2)
 
-WebUI.setDate(findTestObject('Booking/calendar'), 10, 4, 2019, 2000, FailureHandling.STOP_ON_FAILURE)
+CustomKeywords.'com.katalon.plugin.keyword.calendar.SetDateCalendarKeyword.setDate'(findTestObject('Booking/calendar'), 10, 4, 2019, 2000, FailureHandling.STOP_ON_FAILURE)
 
-WebUI.setDate(findTestObject('Booking/calendar'), 14, 4, 2019, 2000, FailureHandling.STOP_ON_FAILURE)
+CustomKeywords.'com.katalon.plugin.keyword.calendar.SetDateCalendarKeyword.setDate'(findTestObject('Booking/calendar'), 14, 4, 2019, 2000, FailureHandling.STOP_ON_FAILURE)
 
 WebUI.delay(15)
 
