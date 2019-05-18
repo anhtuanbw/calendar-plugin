@@ -3,6 +3,7 @@ package com.katalon.plugin.keyword.calendar
 import java.util.List
 import java.util.regex.Matcher
 import java.util.regex.Pattern
+import java.util.regex.MatchResult;
 import org.openqa.selenium.JavascriptExecutor
 import org.openqa.selenium.WebElement
 import org.openqa.selenium.By
@@ -28,7 +29,7 @@ public class SetDateCalendarKeyword {
 	static final String DATE_PATTERN_2 = "([0-9]{4}[-/]?((0[13-9]|1[012])[-/]?(0[1-9]|[12][0-9]|30)|(0[13578]|1[02])[-/]?31|02[-/]?(0[1-9]|1[0-9]|2[0-8]))|([0-9]{2}(([2468][048]|[02468][48])|[13579][26])|([13579][26]|[02468][048]|0[0-9]|1[0-6])00)[-/]?02[-/]?29)"
 	//<a class="myDay shadow" data-day="3" data-month="5" data-year="2019" onclick="">3</a>
 	static final String DATE_PATTERN_3 = '(?<=day=")([0-9]{1}|1[0-9]{1}|2[0-9]{1}|3[0-1]{1})(?=")|(?<=month=")([0-9]{1}|1[0-2]{1})(?=")|(?<=year=")([0-9]{4})(?=")'
-	
+
 	@Keyword
 	def setDate(TestObject to, int day, int month, int year,int slideTimeOut, FailureHandling flowControl) throws StepFailedException {
 		WebUIKeywordMain.runKeyword( {
@@ -50,7 +51,7 @@ public class SetDateCalendarKeyword {
 
 				//get all child element in calendar object
 				List<WebElement> allChildElement = calendar.findElements(By.xpath(".//*"))
-				
+
 				//TO-DO: find solution for filter the displayed element more exactly
 				List<WebElement> displayedElements = allChildElement.size() > 500 ?  filterTheElementsDisplayed(allChildElement) : allChildElement;
 
@@ -62,7 +63,6 @@ public class SetDateCalendarKeyword {
 
 				if (firstDate.length() == 0)
 					WebUIKeywordMain.stepFailed("This calendar is not supported!", flowControl, null, true)
-					
 
 				JavascriptExecutor js = (JavascriptExecutor) DriverFactory.getWebDriver();
 
@@ -159,10 +159,16 @@ public class SetDateCalendarKeyword {
 		for(String regEx : regExPatterns){
 			Pattern pattern = Pattern.compile(regEx);
 			Matcher matcher = pattern.matcher(getElementTagAttribute(we));
-
-			if (matcher.find()){
-				return (String) matcher.group()
+			
+			List<String> matchValue = new ArrayList<String>();
+			String t = "";
+			while (matcher.find()){
+				matchValue.add((String) matcher.group())
 			}
+			if (matchValue.size() == 1)
+				return matchValue[0];
+			if (matchValue.size() == 3 & regEx.equals(DATE_PATTERN_3))
+				return matchValue[1] + "-" + matchValue[0] + "-"+ matchValue[2]
 		}
 
 		return ""
