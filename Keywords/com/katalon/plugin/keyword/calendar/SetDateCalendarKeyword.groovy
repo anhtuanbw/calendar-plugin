@@ -22,9 +22,13 @@ import groovy.transform.CompileStatic
 import internal.GlobalVariable
 
 public class SetDateCalendarKeyword {
+	//May 30 2019
 	static final String DATE_PATTERN_1 = "(\\b\\d{1,2}\\D{0,3})?\\b(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|(Nov|Dec)(?:ember)?)\\D?(\\d{1,2}\\D?)?\\D?((19[7-9]\\d|20\\d{2})|\\d{2})"
+	//2019-05-31
 	static final String DATE_PATTERN_2 = "([0-9]{4}[-/]?((0[13-9]|1[012])[-/]?(0[1-9]|[12][0-9]|30)|(0[13578]|1[02])[-/]?31|02[-/]?(0[1-9]|1[0-9]|2[0-8]))|([0-9]{2}(([2468][048]|[02468][48])|[13579][26])|([13579][26]|[02468][048]|0[0-9]|1[0-6])00)[-/]?02[-/]?29)"
-
+	//<a class="myDay shadow" data-day="3" data-month="5" data-year="2019" onclick="">3</a>
+	static final String DATE_PATTERN_3 = '(?<=day=")([0-9]{1}|1[0-9]{1}|2[0-9]{1}|3[0-1]{1})(?=")|(?<=month=")([0-9]{1}|1[0-2]{1})(?=")|(?<=year=")([0-9]{4})(?=")'
+	
 	@Keyword
 	def setDate(TestObject to, int day, int month, int year,int slideTimeOut, FailureHandling flowControl) throws StepFailedException {
 		WebUIKeywordMain.runKeyword( {
@@ -46,13 +50,19 @@ public class SetDateCalendarKeyword {
 
 				//get all child element in calendar object
 				List<WebElement> allChildElement = calendar.findElements(By.xpath(".//*"))
-				List<WebElement> displayedElements = filterTheElementsDisplayed(allChildElement);
+				
+				//TO-DO: find solution for filter the displayed element more exactly
+				List<WebElement> displayedElements = allChildElement.size() > 500 ?  filterTheElementsDisplayed(allChildElement) : allChildElement;
 
 				//get next and previous month button
 				WebElement nextBtn = getNextMonthElement(displayedElements);
 				WebElement prevBtn = getPreviousMonthElement(displayedElements);
 
 				String firstDate = getFirstDateElementVisible(displayedElements);
+
+				if (firstDate.length() == 0)
+					WebUIKeywordMain.stepFailed("This calendar is not supported!", flowControl, null, true)
+					
 
 				JavascriptExecutor js = (JavascriptExecutor) DriverFactory.getWebDriver();
 
@@ -144,6 +154,7 @@ public class SetDateCalendarKeyword {
 		//add all date pattern we have
 		regExPatterns.add(DATE_PATTERN_1);
 		regExPatterns.add(DATE_PATTERN_2);
+		regExPatterns.add(DATE_PATTERN_3);
 
 		for(String regEx : regExPatterns){
 			Pattern pattern = Pattern.compile(regEx);
@@ -183,7 +194,7 @@ public class SetDateCalendarKeyword {
 
 	public String getFirstDateElementVisible(List<WebElement> listWE){
 		for(WebElement we : listWE){
-			if (getDateFormatOfElement(we).length() > 1 && we.isDisplayed())
+			if (getDateFormatOfElement(we).length() > 1)
 				return getDateFormatOfElement(we);
 		}
 		return "";
