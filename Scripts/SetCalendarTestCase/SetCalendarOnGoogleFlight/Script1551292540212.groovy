@@ -23,9 +23,9 @@ WebUI.click(findTestObject('GoogleFlight/startDate'))
 
 WebUI.delay(2)
 
-WebUI.setDate(findTestObject('GoogleFlight/calendar'), 10, 4, 2019, 2000, FailureHandling.STOP_ON_FAILURE)
+CustomKeywords.'com.katalon.plugin.keyword.calendar.SetDateCalendarKeyword.setDate'(findTestObject('GoogleFlight/calendar'), 10, 4, 2019, 2000, FailureHandling.STOP_ON_FAILURE)
 
-WebUI.setDate(findTestObject('GoogleFlight/calendar'), 25, 5, 2019, 2000, FailureHandling.STOP_ON_FAILURE)
+CustomKeywords.'com.katalon.plugin.keyword.calendar.SetDateCalendarKeyword.setDate'(findTestObject('GoogleFlight/calendar'), 25, 5, 2019, 2000, FailureHandling.STOP_ON_FAILURE)
 
 WebUI.delay(15)
 

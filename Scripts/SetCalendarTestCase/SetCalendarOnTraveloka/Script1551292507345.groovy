@@ -23,7 +23,7 @@ WebUI.click(findTestObject('Traveloka/startDate'))
 
 WebUI.delay(2)
 
-WebUI.setDate(findTestObject('Traveloka/calendar'), 10, 4, 2019, 2000, FailureHandling.STOP_ON_FAILURE)
+CustomKeywords.'com.katalon.plugin.keyword.calendar.SetDateCalendarKeyword.setDate'(findTestObject('Traveloka/calendar'), 10, 4, 2019, 2000, FailureHandling.STOP_ON_FAILURE)
 
 WebUI.delay(5)
 
